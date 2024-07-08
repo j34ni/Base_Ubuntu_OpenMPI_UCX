@@ -84,49 +84,10 @@ ENV CPATH=/usr/local/ucc/include:$CPATH \
     LIBRARY_PATH=/usr/local/ucc/lib:$LIBRARY_PATH \
     PATH=/usr/local/ucc/bin:$PATH
 
-# Hwloc version 2.11.1
-RUN wget -q -nc --no-check-certificate -P /var/tmp https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.1.tar.gz && \
-    tar -x -f /var/tmp/hwloc-2.11.1.tar.gz -C /var/tmp -z && \
-    cd /var/tmp/hwloc-2.11.1 && CC=gcc CXX=g++ F77=gfortran FC=gfortran ./configure --prefix=/usr/local/hwloc --disable-doxygen && \
-    make -j$(nproc) && \
-    make -j$(nproc) install && \
-    echo "/usr/local/hwloc/lib" >> /etc/ld.so.conf.d/espresso.conf && ldconfig && \
-    rm -rf /var/tmp/hwloc-2.11.1 /var/tmp/hwloc-2.11.1.tar.gz
-ENV LD_LIBRARY_PATH=/usr/local/hwloc/lib:$LD_LIBRARY_PATH \
-    LIBRARY_PATH=/usr/local/hwloc/lib:$LIBRARY_PATH \
-    PATH=/usr/local/hwloc/bin:$PATH \
-    CPATH=/usr/local/hwloc/include:$CPATH
-
-# Libevent version 2.1.12
-RUN wget -q -nc --no-check-certificate -P /var/tmp https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz && \
-    tar -x -f /var/tmp/libevent-2.1.12-stable.tar.gz -C /var/tmp -z && \
-    cd /var/tmp/libevent-2.1.12-stable && CC=gcc CXX=g++ F77=gfortran FC=gfortran ./configure --prefix=/usr/local/libevent && \
-    make -j$(nproc) && \
-    make -j$(nproc) install && \
-    echo "/usr/local/libevent/lib" >> /etc/ld.so.conf.d/espresso.conf && ldconfig && \
-    rm -rf /var/tmp/libevent-2.1.12-stable /var/tmp/libevent-2.1.12-stable.tar.gz
-ENV LD_LIBRARY_PATH=/usr/local/libevent/lib:$LD_LIBRARY_PATH \
-    LIBRARY_PATH=/usr/local/libevent/lib:$LIBRARY_PATH \
-    PATH=/usr/local/libevent/bin:$PATH \
-    CPATH=/usr/local/libevent/include:$CPATH
-
-# PMIx version 5.0.2 
-RUN wget -q -nc --no-check-certificate -P /var/tmp https://github.com/openpmix/openpmix/releases/download/v5.0.2/pmix-5.0.2.tar.gz && \
-    tar -x -f /var/tmp/pmix-5.0.2.tar.gz -C /var/tmp -z && \
-    cd /var/tmp/pmix-5.0.2 && CC=gcc CXX=g++ F77=gfortran FC=gfortran ./configure --prefix=/usr/local/pmix --with-gnu-ld --with-libevent=/usr/local/libevent --with-hwloc=/usr/local/hwloc && \
-    make -j$(nproc) && \
-    make -j$(nproc) install && \
-    echo "/usr/local/pmix/lib" >> /etc/ld.so.conf.d/espresso.conf && ldconfig && \
-    rm -rf /var/tmp/pmix-5.0.2 /var/tmp/pmix-5.0.2.tar.gz
-ENV LD_LIBRARY_PATH=/usr/local/pmix/lib:$LD_LIBRARY_PATH \
-    LIBRARY_PATH=/usr/local/pmix/lib:$LIBRARY_PATH \
-    PATH=/usr/local/pmixc/bin:$PATH \
-    CPATH=/usr/local/pmix/include:$CPATH
-
 # OpenMPI version 5.0.3
 RUN wget -q -nc --no-check-certificate -P /var/tmp https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz && \
     tar -x -f /var/tmp/openmpi-5.0.3.tar.gz -C /var/tmp -z && \
-    cd /var/tmp/openmpi-5.0.3 && CC=gcc CXX=g++ FC=gfortran ./configure --prefix=/usr/local/openmpi --with-libevent=/usr/local/libevent --with-hwloc=/usr/local/hwloc --with-pmix=/usr/local/pmix --with-ucx=/usr/local/ucx --with-ucc=/usr/local/ucc --without-verbs --without-cuda FCFLAGS='-fallow-argument-mismatch -fallow-invalid-boz' && \
+    cd /var/tmp/openmpi-5.0.3 && CC=gcc CXX=g++ FC=gfortran ./configure --prefix=/usr/local/openmpi --with-libevent=internal --with-hwloc=internal --with-pmix=internal --with-ucx=/usr/local/ucx --with-ucc=/usr/local/ucc --without-verbs --without-cuda FCFLAGS='-fallow-argument-mismatch -fallow-invalid-boz' && \
     make -j$(nproc) && \
     make -j$(nproc) install && \
     echo "/usr/local/openmpi/lib" >> /etc/ld.so.conf.d/espresso.conf && ldconfig && \
